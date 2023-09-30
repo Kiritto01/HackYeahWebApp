@@ -7,10 +7,75 @@ import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import Box from '@mui/material/Box';
 import Slider from '@mui/material/Slider';
+import Button from '@mui/material/Button';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 import './MainForm.css';
 import './Requests.js'
 
 const MainForm = () => {
+
+  async function postEndpoint(endpoint, postData, toJSON = false) {
+    if(toJSON) {postData = JSON.stringify(postData);}
+    const options = {
+        method: 'POST',
+        mode: 'cors',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'},
+        redirect: 'follow',
+        referrerPolicy: 'no-referrer',
+        body: postData,
+        timeout: 5000
+    };
+    return await fetchEndpoint(endpoint, options);
+  }
+  
+  async function getEndpoint(endpoint) {
+  
+    const options = {
+        method: 'GET',
+        mode: 'cors',
+        headers: {'Accept': 'application/json'},
+        redirect: 'follow',
+        referrerPolicy: 'no-referrer',
+        timeout: 5000
+    };
+    return await fetchEndpoint(endpoint, options);
+  }
+  
+  async function fetchEndpoint(endpoint, fetchOptions) {
+    endpoint = "http://34.116.145.9:2137/"+endpoint;
+    try{
+        const response = await fetch(endpoint, fetchOptions);
+  
+        return {
+            body: await response.json(),
+            status: response.status
+        }
+    } catch {
+        return {
+            body: {message: "unable to connect to server"},
+            status: 503
+        }
+    }
+  }
+
+  const theme = createTheme({
+    palette: {
+      primary: {
+        light: '#0061c2',
+        main: '#0052A5',
+        dark: '#004285',
+        contrastText: '#fff',
+      },
+      secondary: {
+        light: '#ff7961',
+        main: '#f44336',
+        dark: '#ba000d',
+        contrastText: '#000',
+      },
+    },
+  });
 
   const [type, setType] = React.useState('');
   const handleChangeType = (event) => {
@@ -20,6 +85,9 @@ const MainForm = () => {
   const handleChangeForm = (event) => {
     setForm(event.target.value);
   };
+  const category = React.useRef('');
+  const region = React.useRef('');
+  var price = 0;
 
   const priceMarks = [
     {
@@ -69,88 +137,155 @@ const MainForm = () => {
 
   return (
     <form id="browser">
-
-      <Autocomplete
-        disablePortal
-        id="category"
-        options={categories}
-        sx={{ width: 600 }}
-        renderInput={(params) => <TextField {...params} label="Interesująca Cię kategoria" />}
-      />
-
-      <div style={{display: 'flex', gap: '20px'}}>
-        <FormControl>
-          <InputLabel id="type-label">Typ studiów</InputLabel>
-          <Select
-            labelId="type-label"
-            id="type"
-            value={type}
-            label="Typ studiów"
-            onChange={handleChangeType}
-            sx={{ width: 290 }}
-          >
-            <MenuItem value={""}><i>-</i></MenuItem>
-            <MenuItem value={1}>jednolite magisterskie</MenuItem>
-            <MenuItem value={2}>pierwszego stopnia</MenuItem>a
-            <MenuItem value={3}>drugiego stopnia</MenuItem>
-          </Select>
-        </FormControl>
-
-        <FormControl>
-          <InputLabel id="form-label">Forma studiów</InputLabel>
-          <Select
-            labelId="form-label"
-            id="form"
-            value={form}
-            label="Forma studiów"
-            onChange={handleChangeForm}
-            sx={{ width: 290 }}
-          >
-            <MenuItem value={""}><i>-</i></MenuItem>
-            <MenuItem value={1}>Stacjonarne</MenuItem>
-            <MenuItem value={2}>Zdalne</MenuItem>a
-            <MenuItem value={3}>Hybrydowe</MenuItem>
-          </Select>
-        </FormControl>
-      </div>
-
-      <Autocomplete
-        disablePortal
-        id="region"
-        options={regions}
-        sx={{ width: 600 }}
-        renderInput={(params) => <TextField {...params} label="Województwo" />}
-      />
-
-      <Box sx={{ width: 600 }} style={{display: "flex", padding: "0 40px 0 20px", "box-sizing": "border-box", "margin-top": "20px"}}>
-        <span style={{width: "90px", "font-family": "Helvetica"}}>Czesne</span>
-        <Slider
-          id="price"
-          aria-label="Always visible"
-          defaultValue={0}
-          getAriaValueText={priceText}
-          step={100}
-          marks={priceMarks}
-          valueLabelDisplay="on"
-          max="10000"
-          sx={{ width: 450 }}
+      <ThemeProvider theme={theme}>
+        <Autocomplete
+          disablePortal
+          id="category"
+          options={categories}
+          sx={{ width: 600 }}
+          renderInput={(params) => 
+            <TextField {...params}
+            inputRef={category}
+              label="Interesująca Cię kategoria"
+              sx={{
+                "& .MuiInputLabel-root": { color: '#0052A5AA'},
+                "& .MuiOutlinedInput-root": {
+                  "& > fieldset": { borderColor: "#0052A5AA" },
+                  '&:hover fieldset': { borderColor: '#0052A5'},
+                },
+                '.MuiSvgIcon-root ': { fill: "#0052A5 !important"}
+              }}
+            />
+          }
         />
-      </Box>
 
-      <Box sx={{ width: 600 }} style={{display: "flex", padding: "0 40px 0 20px", "box-sizing": "border-box", "margin-top": "20px"}}>
-        <span style={{width: "90px", "font-family": "Helvetica"}}>Dojazd</span>
-        <Slider
-          id="time"
-          aria-label="Always visible"
-          defaultValue={30}
-          getAriaValueText={timeText}
-          step={5}
-          marks={timeMarks}
-          valueLabelDisplay="on"
-          max="120"
-          sx={{ width: 450 }}
+        <div style={{display: 'flex', gap: '20px'}}>
+          <FormControl>
+            <InputLabel
+              id="type-label"
+              sx={{
+                color: "#0052A5AA"
+              }}
+            >
+              Typ studiów
+            </InputLabel>
+            <Select
+              labelId="type-label"
+              id="type"
+              value={type}
+              label="Typ studiów"
+              onChange={handleChangeType}
+              sx={{
+                width: 290,
+                '.MuiOutlinedInput-notchedOutline': { borderColor: '#0052A5AA'},
+                '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: '#0052A5'},
+                '.MuiSvgIcon-root ': { fill: "#0052A5 !important"}
+              }}
+            >
+              <MenuItem value={""}><i>-</i></MenuItem>
+              <MenuItem value={1}>jednolite magisterskie</MenuItem>
+              <MenuItem value={2}>pierwszego stopnia</MenuItem>a
+              <MenuItem value={3}>drugiego stopnia</MenuItem>
+            </Select>
+          </FormControl>
+
+          <FormControl>
+            <InputLabel
+              id="form-label"
+              sx={{
+                color: "#0052A5AA"
+              }}
+            >
+              Forma studiów
+            </InputLabel>
+            <Select
+              labelId="form-label"
+              id="form"
+              value={form}
+              label="Forma studiów"
+              onChange={handleChangeForm}
+              sx={{
+                width: 290,
+                '.MuiOutlinedInput-notchedOutline': { borderColor: '#0052A5AA'},
+                '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: '#0052A5'},
+                '.MuiSvgIcon-root ': { fill: "#0052A5 !important"}
+              }}
+            >
+              <MenuItem value={""}><i>-</i></MenuItem>
+              <MenuItem value={1}>Stacjonarne</MenuItem>
+              <MenuItem value={2}>Nie stacjonarne</MenuItem>a
+            </Select>
+          </FormControl>
+        </div>
+
+        <Autocomplete
+          disablePortal
+          id="region"
+          options={regions}
+          sx={{ width: 600 }}
+          renderInput={(params) =>
+            <TextField {...params}
+              inputRef={region}
+              label="Województwo"
+              sx={{
+                "& .MuiInputLabel-root": { color: '#0052A5AA'},
+                "& .MuiOutlinedInput-root": {
+                  "& > fieldset": { borderColor: "#0052A5AA" },
+                  '&:hover fieldset': { borderColor: '#0052A5'},
+                },
+                '.MuiSvgIcon-root ': { fill: "#0052A5 !important"}
+              }}
+            />
+          }
         />
-      </Box>
+
+        <Box sx={{ width: 600 }} style={{display: "flex", padding: "0 40px 0 20px", "box-sizing": "border-box", "margin-top": "20px"}}>
+          <span style={{width: "90px", "font-family": "Helvetica"}}>Czesne</span>
+          <Slider
+            onChange={ (e, val) => {price=val}}
+            id="price"
+            aria-label="Always visible"
+            defaultValue={0}
+            getAriaValueText={priceText}
+            step={100}
+            marks={priceMarks}
+            valueLabelDisplay="on"
+            max="10000"
+            sx={{ width: 450 }}
+          />
+        </Box>
+
+        <Box sx={{ width: 600 }} style={{display: "flex", padding: "0 40px 0 20px", "box-sizing": "border-box", "margin-top": "20px"}}>
+          <span style={{width: "90px", "font-family": "Helvetica"}}>Dojazd</span>
+          <Slider
+            id="time"
+            aria-label="Always visible"
+            defaultValue={30}
+            getAriaValueText={timeText}
+            step={5}
+            marks={timeMarks}
+            valueLabelDisplay="on"
+            max="120"
+            sx={{ width: 450 }}
+          />
+        </Box>
+        <Button
+          variant="contained"
+          onClick={async () => {
+            const response = await postEndpoint("course", {
+              "wojewodztwo": region.current.value,
+              "forma": form.toString(),
+              "poziom": type.toString(),
+              "kategoria": category.current.value,
+              "isAbroad": false,
+              "maxPrice": price.toString()
+            }, true);
+            console.log(response.body);
+          }}
+        >
+          Dopasuj uczelnie
+        </Button>
+      </ThemeProvider>
     
     </form>
   );

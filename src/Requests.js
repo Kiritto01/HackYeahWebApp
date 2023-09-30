@@ -30,7 +30,7 @@ async function getEndpoint(endpoint) {
 }
 
 async function fetchEndpoint(endpoint, fetchOptions) {
-    endpoint = this.BASE_ENDPOINT+endpoint;
+    endpoint = "http://34.116.145.9:2137/"+endpoint;
     try{
         const response = await fetch(endpoint, fetchOptions);
 

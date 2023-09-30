@@ -1,0 +1,120 @@
+.thank-you {
+    background-color: #2c2a36;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    width: 100%;
+  }
+  
+  .thank-you .div {
+    background-color: #2c2a36;
+    height: 960px;
+    position: relative;
+    width: 1315px;
+  }
+  
+  .thank-you .text-wrapper {
+    color: #ffffff;
+    font-family: "Inter-Bold", Helvetica;
+    font-size: 80px;
+    font-weight: 700;
+    height: 100px;
+    left: 412px;
+    letter-spacing: 1.2px;
+    line-height: 100px;
+    position: absolute;
+    text-align: center;
+    top: 146px;
+    white-space: nowrap;
+  }
+  
+  .thank-you .p {
+    color: #ffffff;
+    font-family: "Inter-Medium", Helvetica;
+    font-size: 48px;
+    font-weight: 500;
+    height: 58px;
+    left: 270px;
+    letter-spacing: 0.72px;
+    line-height: 58px;
+    position: absolute;
+    text-align: center;
+    top: 262px;
+    white-space: nowrap;
+  }
+  
+  .thank-you .text-wrapper-2 {
+    color: #ffffff;
+    font-family: "Inter-Medium", Helvetica;
+    font-size: 32px;
+    font-weight: 500;
+    height: 42px;
+    left: 518px;
+    letter-spacing: 0.48px;
+    line-height: 42px;
+    position: absolute;
+    text-align: center;
+    top: 676px;
+    white-space: nowrap;
+  }
+  
+  .thank-you .text-wrapper-3 {
+    color: #dfe2f780;
+    font-family: "Inter-Medium", Helvetica;
+    font-size: 24px;
+    font-weight: 500;
+    height: 86px;
+    left: 162px;
+    letter-spacing: 0;
+    line-height: 42.7px;
+    position: absolute;
+    text-align: center;
+    top: 357px;
+    width: 992px;
+  }
+  
+  .thank-you .tags {
+    align-items: center;
+    background: linear-gradient(180deg, rgb(69, 70, 254) 0%, rgb(190.63, 91.8, 255) 100%);
+    border-radius: 100px;
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    left: 418px;
+    padding: 10px 24px;
+    position: absolute;
+    top: 751px;
+    width: 480px;
+  }
+  
+  .thank-you .text-wrapper-4 {
+    color: #ffffff;
+    font-family: "Inter-Medium", Helvetica;
+    font-size: 32px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    line-height: 42px;
+    margin-top: -1px;
+    position: relative;
+    text-decoration: underline;
+    white-space: nowrap;
+    width: fit-content;
+  }
+  :root {
+    --error: rgba(219, 55, 31, 1);
+    --neutral-10: rgba(226, 226, 226, 1);
+    --neutral-100: rgba(32, 16, 43, 1);
+    --neutral-20: rgba(221, 220, 221, 1);
+    --neutral-30: rgba(215, 213, 215, 1);
+    --neutral-40: rgba(204, 202, 205, 1);
+    --neutral-50: rgba(180, 176, 183, 1);
+    --neutral-60: rgba(155, 149, 159, 1);
+    --neutral-70: rgba(131, 122, 136, 1);
+    --neutral-80: rgba(102, 91, 109, 1);
+    --neutral-90: rgba(77, 64, 85, 1);
+    --primaryblue: rgba(0, 82, 165, 1);
+    --success: rgba(25, 178, 53, 1);
+    --warning: rgba(229, 155, 32, 1);
+    --white-10: rgba(255, 255, 255, 1);
+    --white-20: rgba(250, 250, 250, 1);
+  }

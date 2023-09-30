@@ -1,13 +1,11 @@
-import logo from './logo.svg';
-import './App.css';
-import TravelTime from './Distance';
-import googleMapsApiKey from './config';
-
+import MainForm from "./MainForm.js"
+import TravelTime from "./Distance.js";
 
 function App() {
+
   return (
-    <div>
-      <h1>Przewidywany czas podróży</h1>
+    <div className="App">
+      <MainForm></MainForm>
       <TravelTime/>
     </div>
   );

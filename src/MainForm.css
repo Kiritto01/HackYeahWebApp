@@ -18,3 +18,22 @@
   border-right: 1px solid #1976d2;
   border-bottom: 1px solid #1976d2;
 }
+
+.form-slider {
+  display: "flex";
+  flex-direction: column;
+  box-sizing: "border-box";
+  padding: "0 40px 0 20px";
+  margin-top: "20px";
+  align-items: center;
+  justify-content: center;
+}
+
+.form-slider > span {
+  margin-bottom: 40px;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #0052A5;
+}

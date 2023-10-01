@@ -9,6 +9,8 @@ import Box from '@mui/material/Box';
 import Slider from '@mui/material/Slider';
 import Button from '@mui/material/Button';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Switch from '@mui/material/Switch';
 import './MainForm.css';
 import './Requests.js'
 import Card from './Card';
@@ -18,6 +20,8 @@ const MainForm = () => {
   const [loading, setLoading] = React.useState(false)
   const [isCards, setIsCards] = React.useState(false)
   const [cards, setCards] = React.useState([]);
+
+
 
   const types = {
     "1": "jednolite magisterskie", 
@@ -98,6 +102,7 @@ const MainForm = () => {
   };
   const category = React.useRef('');
   const region = React.useRef('');
+  const abroad = React.useRef('');
   var price = 0;
 
   const priceMarks = [
@@ -106,8 +111,8 @@ const MainForm = () => {
       label: '0 zł',
     },
     {
-      value: 1000,
-      label: '1 000 zł',
+      value: 2500,
+      label: '2 500 zł',
     },
     {
       value: 5000,
@@ -250,24 +255,32 @@ const MainForm = () => {
           }
         />
 
-        <Box sx={{ width: 600 }} style={{display: "flex", padding: "0 40px 0 20px", "box-sizing": "border-box", "margin-top": "20px"}}>
-          <span style={{width: "90px", "font-family": "Helvetica"}}>Czesne</span>
+        <Box sx={{ width: 600 }} className="form-slider">
+          <span>
+            Maksymalny koszt:
+            <FormControlLabel
+              control={
+                <Switch inputRef={abroad}/>
+              }
+              label="Jestem z za granicy"
+            />
+          </span>
           <Slider
             onChange={ (e, val) => {price=val}}
             id="price"
             aria-label="Always visible"
             defaultValue={0}
             getAriaValueText={priceText}
-            step={100}
+            step={250}
             marks={priceMarks}
             valueLabelDisplay="on"
             max="10000"
-            sx={{ width: 450 }}
+            sx={{ width: "100%" }}
           />
         </Box>
 
-        <Box sx={{ width: 600 }} style={{display: "flex", padding: "0 40px 0 20px", "box-sizing": "border-box", "margin-top": "20px"}}>
-          <span style={{width: "90px", "font-family": "Helvetica"}}>Dojazd</span>
+        <Box sx={{ width: 600 }} className="form-slider">
+          <span>Maksymalny czas dojazdu: </span>
           <Slider
             id="time"
             aria-label="Always visible"

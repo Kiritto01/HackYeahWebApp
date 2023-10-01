@@ -16,15 +16,20 @@ import PlacesAutocomplete, {
   geocodeByAddress,
   getLatLng,
 } from "react-places-autocomplete";
+import Card from './Card';
 
 const MainForm = () => {
 
-  const [pointA, setPointA] = useState({ lat: null, lng: null, address: "" });
-  
-  const replaceSpacesAndCommas = (input) => {
-    return input.replace(/ /g, '+').replace(/,/g, '%2C');
+  const [loading, setLoading] = React.useState(false)
+  const [isCards, setIsCards] = React.useState(false)
+  const [cards, setCards] = React.useState([]);
+
+  const types = {
+    "1": "jednolite magisterskie", 
+    "2": "pierwszego stopnia",
+    "3": "drugiego stopnia"
   };
-  
+
   async function postEndpoint(endpoint, postData, toJSON = false) {
     if(toJSON) {postData = JSON.stringify(postData);}
     const options = {
@@ -309,6 +314,9 @@ const MainForm = () => {
         <Button
           variant="contained"
           onClick={async () => {
+            setCards(cards => []);
+            setIsCards(isCards => false);
+            setLoading(true);
             const response = await postEndpoint("course", {
               "wojewodztwo": region.current.value,
               "forma": form.toString(),
@@ -318,12 +326,40 @@ const MainForm = () => {
               "maxPrice": price.toString()
             }, true);
             console.log(`https://www.google.com/maps/dir/?api=1&origin=Space+Needle+Seattle+WA&destination=${replaceSpacesAndCommas(pointA.address)}&travelmode=bicycling`);
+            let res = response.body
+            let c = []
+            for (let key in res) {
+              let row = res[key];
+              c.push(row);
+            }
+            console.log(c)
+            setCards(cards => c);
+            setIsCards(isCards => true);
+            setLoading(false);
           }}
         >
-          Dopasuj uczelnie
+          Dopasuj uczelnie!
         </Button>
       </ThemeProvider>
-    
+      {() => {
+        if(loading == true) {
+          return (
+            <div className="loading">Ładowanie</div>
+          );
+        }
+      }}
+      {cards.map((card) => {
+        return (
+          <Card
+            name={card.leadingInstitutionName}
+            course={card.courseName}
+            price={card.amount}
+            address={card.address}
+            type={types[card.level]}
+            logoUrl={"https://aplikacje.edukacja.gov.pl/app/assets/logos/university/"+card.iconId+".png"}
+          />
+        );
+      })}
     </form>
   );
 }

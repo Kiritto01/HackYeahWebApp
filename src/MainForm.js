@@ -25,8 +25,6 @@ const MainForm = () => {
   const [isCards, setIsCards] = React.useState(false)
   const [cards, setCards] = React.useState([]);
 
-  const [pointA, setPointA] = React.useState({ lat: null, lng: null, address: "" });
-
   const types = {
     "1": "jednolite magisterskie", 
     "2": "pierwszego stopnia",

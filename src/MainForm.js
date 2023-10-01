@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import FormControl from '@mui/material/FormControl';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
@@ -20,7 +20,7 @@ import PlacesAutocomplete, {
 import Card from './Card';
 
 const MainForm = () => {
-
+  const [pointA, setPointA] = useState({ lat: null, lng: null, address: "" });
   const [loading, setLoading] = React.useState(false)
   const [isCards, setIsCards] = React.useState(false)
   const [cards, setCards] = React.useState([]);
@@ -110,6 +110,7 @@ const MainForm = () => {
   };
   const category = React.useRef('');
   const region = React.useRef('');
+  const addresRef = React.useRef('');
   var price = 0;
 
   const priceMarks = [
@@ -158,6 +159,15 @@ const MainForm = () => {
     return `${value} min`;
   }
 
+
+  const [address, setAddress] = useState('');
+
+  const handleAddressChange = (event) => {
+    console.log(event);
+    setAddress(event);
+  }
+
+  
   return (
     <form id="browser">
       <ThemeProvider theme={theme}>
@@ -274,7 +284,6 @@ const MainForm = () => {
             />
           </span>
           <Slider
-            onChange={ (e, val) => {price=val}}
             id="price"
             aria-label="Always visible"
             defaultValue={0}
@@ -283,19 +292,18 @@ const MainForm = () => {
             marks={priceMarks}
             valueLabelDisplay="on"
             max="10000"
-            sx={{ width: "100%" }}
+            sx={{ width: 450 }}
           />
         </Box>
-
 
         <Box sx={{ width: 600 }} className="form-slider">
           <span>
             Maksymalny czas dojazdu:
             <PlacesAutocomplete
-              value={pointA.address}
-              onChange={(address) => setPointA({ ...pointA, address })}
-            >
-            {({ getInputProps, suggestions, getSuggestionItemProps }) => (
+              value={address}
+              onChange={handleAddressChange}
+            > 
+            {({ getInputProps, suggestions, getSuggestionItemProps}) => (
               <div className="autocomplete-container">
                 <input
                   {...getInputProps({
@@ -353,16 +361,24 @@ const MainForm = () => {
             }, true);
             let res = response.body
             let c = []
+            console.log(address)
             for (let key in res) {
               let row = res[key];
               c.push(row);
             }
+              c.push(pointA.address);
+            
+            
+            
+            
+            
             console.log(c)
             setCards(cards => c);
             setIsCards(isCards => true);
             setLoading(false);
           }}
-        >
+          
+        > 
           Dopasuj uczelnie!
         </Button>
       </ThemeProvider>
@@ -382,6 +398,7 @@ const MainForm = () => {
             address={card.address}
             type={types[card.level]}
             logoUrl={"https://aplikacje.edukacja.gov.pl/app/assets/logos/university/"+card.iconId+".png"}
+            home={address}
           />
         );
       })}
@@ -636,3 +653,4 @@ const regions = [
 ]
 
 export default MainForm;
+

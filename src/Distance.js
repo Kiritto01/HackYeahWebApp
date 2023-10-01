@@ -1,109 +1,109 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import TextField from '@mui/material/TextField';
-import Autocomplete from '@mui/material/Autocomplete';
-import Grid from '@mui/material/Grid';
-import Typography from '@mui/material/Typography';
-import { styled } from '@mui/material/styles';
+import React, { useState } from "react";
+import axios from "axios";
+import PlacesAutocomplete, {
+  geocodeByAddress,
+  getLatLng,
+} from "react-places-autocomplete";
 
-const Container = styled('div')({
-  padding: '20px',
-});
+function DistanceCalculator() {
+  const [pointA, setPointA] = useState({ lat: null, lng: null, address: "" });
+  const [pointB, setPointB] = useState({ lat: null, lng: null, address: "" });
+  const apiKey = "AIzaSyBcYR05-2mAHVR2SE4Se8saryGiqDe9plc";
 
-const TravelTime = () => {
-  const [origin, setOrigin] = useState('');
-  const [destination, setDestination] = useState('');
-  const [apiKey] = useState('AIzaSyBcYR05-2mAHVR2SE4Se8saryGiqDe9plc');
-  const [durationByCar, setDurationByCar] = useState(null);
-  const [durationByTransit, setDurationByTransit] = useState(null);
-  const [originSuggestions, setOriginSuggestions] = useState([]);
-  const [destinationSuggestions, setDestinationSuggestions] = useState([]);
-
-  const handleOriginChange = (event, value) => {
-    setOrigin(value);
-  };
-
-  const handleDestinationChange = (event, value) => {
-    setDestination(value);
-  };
-
-  const fetchSuggestions = (searchTerm, isOrigin) => {
-    const placesAutocompleteUrl = `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${searchTerm}&key=${apiKey}`;
-
-    axios
-      .get(placesAutocompleteUrl)
-      .then((response) => {
-        if (isOrigin) {
-          setOriginSuggestions(response.data.predictions);
-        } else {
-          setDestinationSuggestions(response.data.predictions);
-        }
+  const handleSelectPointA = (address) => {
+    geocodeByAddress(address)
+      .then((results) => getLatLng(results[0]))
+      .then(({ lat, lng }) => {
+        setPointA({ lat, lng, address });
       })
-      .catch((error) => {
-        console.error(error);
-      });
+      .catch((error) => console.error("Error in geocoding request: " + error));
   };
 
-  useEffect(() => {
-    if (origin && destination) {
-      const directionsUrlByCar = `https://maps.googleapis.com/maps/api/directions/json?origin=${origin}&destination=${destination}&mode=driving&key=${apiKey}`;
+  const handleSelectPointB = (address) => {
+    geocodeByAddress(address)
+      .then((results) => getLatLng(results[0]))
+      .then(({ lat, lng }) => {
+        setPointB({ lat, lng, address });
+      })
+      .catch((error) => console.error("Error in geocoding request: " + error));
+  };
 
-      const directionsUrlByTransit = `https://maps.googleapis.com/maps/api/directions/json?origin=${origin}&destination=${destination}&mode=transit&key=${apiKey}`;
-
-      axios
-        .all([
-          axios.get(directionsUrlByCar),
-          axios.get(directionsUrlByTransit)
-        ])
-        .then((responses) => {
-          const carRoute = responses[0].data.routes[0].legs[0].duration.text;
-          const transitRoute = responses[1].data.routes[0].legs[0].duration.text;
-
-          setDurationByCar(carRoute);
-          setDurationByTransit(transitRoute);
-        })
-        .catch((error) => {
-          console.error(error);
-          setDurationByCar(null);
-          setDurationByTransit(null);
-        });
+  const calculateDistance = () => {
+    if (!pointA.lat || !pointB.lat) {
+      console.error("Both addresses must be valid to calculate distance.");
+      return;
     }
-  }, [origin, destination, apiKey]);
+
+    const rad = (x) => {
+      return (x * Math.PI) / 180;
+    };
+
+    const R = 6378137; // Earth's mean radius in meters
+    const dLat = rad(pointB.lat - pointA.lat);
+    const dLong = rad(pointB.lng - pointA.lng);
+
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(rad(pointA.lat)) *
+        Math.cos(rad(pointB.lat)) *
+        Math.sin(dLong / 2) *
+        Math.sin(dLong / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+    const distance = R * c; // Distance in meters
+
+    console.log(`Distance between A and B: ${distance} meters`);
+  };
 
   return (
-    <Container>
-      <Grid container spacing={3}>
-        <Grid item xs={6}>
-          <Autocomplete
-            id="origin"
-            options={originSuggestions.map((suggestion) => suggestion.description)}
-            renderInput={(params) => <TextField {...params} label="Lokalizacja A" />}
-            onInputChange={(event, value) => fetchSuggestions(value, true)}
-            onChange={handleOriginChange}
-            value={origin}
-          />
-        </Grid>
-        <Grid item xs={6}>
-          <Autocomplete
-            id="destination"
-            options={destinationSuggestions.map((suggestion) => suggestion.description)}
-            renderInput={(params) => <TextField {...params} label="Lokalizacja B" />}
-            onInputChange={(event, value) => fetchSuggestions(value, false)}
-            onChange={handleDestinationChange}
-            value={destination}
-          />
-        </Grid>
-      </Grid>
-      <Grid container spacing={3}>
-        <Grid item xs={6}>
-          <Typography variant="h6">Czas podróży samochodem: {durationByCar}</Typography>
-        </Grid>
-        <Grid item xs={6}>
-          <Typography variant="h6">Czas podróży komunikacją miejską: {durationByTransit}</Typography>
-        </Grid>
-      </Grid>
-    </Container>
+    <div>
+      <PlacesAutocomplete
+        value={pointA.address}
+        onChange={(address) => setPointA({ ...pointA, address })}
+        onSelect={handleSelectPointA}
+      >
+        {({ getInputProps, suggestions, getSuggestionItemProps }) => (
+          <div>
+            <input
+              {...getInputProps({
+                placeholder: "Enter Point A Address",
+              })}
+            />
+            <div>
+              {suggestions.map((suggestion) => (
+                <div {...getSuggestionItemProps(suggestion)}>
+                  {suggestion.description}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </PlacesAutocomplete>
+      <PlacesAutocomplete
+        value={pointB.address}
+        onChange={(address) => setPointB({ ...pointB, address })}
+        onSelect={handleSelectPointB}
+      >
+        {({ getInputProps, suggestions, getSuggestionItemProps }) => (
+          <div>
+            <input
+              {...getInputProps({
+                placeholder: "Enter Point B Address",
+              })}
+            />
+            <div>
+              {suggestions.map((suggestion) => (
+                <div {...getSuggestionItemProps(suggestion)}>
+                  {suggestion.description}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </PlacesAutocomplete>
+      <button onClick={calculateDistance}>Calculate Distance</button>
+    </div>
   );
-};
+}
 
-export default TravelTime;
+export default DistanceCalculator;

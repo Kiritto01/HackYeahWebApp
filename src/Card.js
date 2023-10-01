@@ -1,7 +1,10 @@
 import "./Card.css"
 
 const Card = (props) => {
-
+    const [pointA, setPointA] = useState({ lat: null, lng: null, address: "" });
+    const replaceSpacesAndCommas = (input) => {
+        return input.replace(/ /g, '+').replace(/,/g, '%2C');
+      };
     return (
         <div className="card">
             <div className="card-left">

@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState } from "react";
 import FormControl from '@mui/material/FormControl';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
@@ -8,12 +8,23 @@ import MenuItem from '@mui/material/MenuItem';
 import Box from '@mui/material/Box';
 import Slider from '@mui/material/Slider';
 import Button from '@mui/material/Button';
+import Switch from '@mui/material/Switch';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import './MainForm.css';
 import './Requests.js'
+import PlacesAutocomplete, {
+  geocodeByAddress,
+  getLatLng,
+} from "react-places-autocomplete";
 
 const MainForm = () => {
 
+  const [pointA, setPointA] = useState({ lat: null, lng: null, address: "" });
+  
+  const replaceSpacesAndCommas = (input) => {
+    return input.replace(/ /g, '+').replace(/,/g, '%2C');
+  };
+  
   async function postEndpoint(endpoint, postData, toJSON = false) {
     if(toJSON) {postData = JSON.stringify(postData);}
     const options = {
@@ -159,6 +170,7 @@ const MainForm = () => {
           }
         />
 
+
         <div style={{display: 'flex', gap: '20px'}}>
           <FormControl>
             <InputLabel
@@ -217,7 +229,7 @@ const MainForm = () => {
             </Select>
           </FormControl>
         </div>
-
+              
         <Autocomplete
           disablePortal
           id="region"
@@ -238,7 +250,31 @@ const MainForm = () => {
             />
           }
         />
-
+        <PlacesAutocomplete
+      value={pointA.address}
+      onChange={(address) => setPointA({ ...pointA, address })}
+    >
+      {({ getInputProps, suggestions, getSuggestionItemProps }) => (
+        <div className="autocomplete-container">
+          <input
+            {...getInputProps({
+              placeholder: 'Podaj adres zamieszkania',
+              className: 'autocomplete-input',
+            })}
+          />
+          <div className="suggestions-container">
+            {suggestions.map((suggestion) => (
+              <div
+                {...getSuggestionItemProps(suggestion)}
+                className="suggestion"
+              >
+                {suggestion.description}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </PlacesAutocomplete>
         <Box sx={{ width: 600 }} style={{display: "flex", padding: "0 40px 0 20px", "box-sizing": "border-box", "margin-top": "20px"}}>
           <span style={{width: "90px", "font-family": "Helvetica"}}>Czesne</span>
           <Slider
@@ -269,6 +305,7 @@ const MainForm = () => {
             sx={{ width: 450 }}
           />
         </Box>
+        
         <Button
           variant="contained"
           onClick={async () => {
@@ -280,7 +317,7 @@ const MainForm = () => {
               "isAbroad": false,
               "maxPrice": price.toString()
             }, true);
-            console.log(response.body);
+            console.log(`https://www.google.com/maps/dir/?api=1&origin=Space+Needle+Seattle+WA&destination=${replaceSpacesAndCommas(pointA.address)}&travelmode=bicycling`);
           }}
         >
           Dopasuj uczelnie

@@ -18,3 +18,47 @@
   border-right: 1px solid #1976d2;
   border-bottom: 1px solid #1976d2;
 }
+
+.autocomplete-container {
+  position: relative;
+  width: 78%;
+  margin-left: -2rem;
+  color: #1976d2;
+}
+.autocomplete-container:focus{
+  border: none;
+}
+.autocomplete-input {
+  width: 100%;
+  padding: 16px; /* Adjust as needed */
+  border: 1px solid #1976d2; /* Match Material-UI's input border */
+  border-radius: 4px; /* Match Material-UI's input border-radius */
+  font-size: 16px; /* Match Material-UI's font size */
+}
+.autocomplete-input::placeholder{
+  color: #1976d2;
+}
+.autocomplete-input:focus{
+  border: 2px solid #1976d2;
+}
+.autocomplete-input:hover {
+  background-color: #f5f5f5; /* Match Material-UI's hover background color */
+}
+
+.suggestions-container {
+  position: absolute;
+  z-index: 1;
+  left: 0;
+  right: 0;
+  border-radius: 4px; /* Match Material-UI's Paper border-radius */
+  background-color: white; /* Match Material-UI's Paper background color */
+}
+
+.suggestion {
+  padding: 16px; /* Adjust as needed */
+  cursor: pointer;
+}
+
+.suggestion:hover {
+  background-color: #f0f0f0; /* Match Material-UI's hover background color */
+}

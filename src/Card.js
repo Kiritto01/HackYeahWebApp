@@ -1,10 +1,16 @@
 import "./Card.css"
+import React, { useState } from "react";
+import { createContext } from 'react';
+import ParentComponnent from "./MainForm";
 
 const Card = (props) => {
-    const [pointA, setPointA] = useState({ lat: null, lng: null, address: "" });
-    const replaceSpacesAndCommas = (input) => {
-        return input.replace(/ /g, '+').replace(/,/g, '%2C');
-      };
+    function replaceSpacesAndCommas(st) {
+        return st
+    };
+
+    let a1 = props.home;
+    let a2 = props.address == null ? "" : props.address;
+
     return (
         <div className="card">
             <div className="card-left">
@@ -19,7 +25,7 @@ const Card = (props) => {
                 </main>
                 <section className="card-buttons">
                     <a href={props.moreLink} className="card-link">Więcej informacji</a>
-                    <a href={props.timeLink} className="card-link">Sprawdź dojazd</a>
+                    <a target="_blank" href={`https://www.google.com/maps/dir/?api=1&origin=${a1.split(/[ ,.]+/).join('+').replace("ul", "")}&destination=${a2.split(/[ ,.]+/).join('+').replace("ul", "")}&travelmode=transit`} className="card-link">Sprawdź dojazd</a>
                 </section>
             </div>
             <div className="card-right">
@@ -30,6 +36,8 @@ const Card = (props) => {
                     <h1>{props.price} zł</h1>
                     miesięcznie
                 </section>
+            </div>
+            <div>
             </div>
         </div>
     );

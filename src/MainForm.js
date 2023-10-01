@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import FormControl from '@mui/material/FormControl';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
@@ -10,6 +10,7 @@ import Slider from '@mui/material/Slider';
 import Button from '@mui/material/Button';
 import Switch from '@mui/material/Switch';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import FormControlLabel from "@mui/material/FormControlLabel";
 import './MainForm.css';
 import './Requests.js'
 import PlacesAutocomplete, {
@@ -19,7 +20,7 @@ import PlacesAutocomplete, {
 import Card from './Card';
 
 const MainForm = () => {
-
+  const [pointA, setPointA] = useState({ lat: null, lng: null, address: "" });
   const [loading, setLoading] = React.useState(false)
   const [isCards, setIsCards] = React.useState(false)
   const [cards, setCards] = React.useState([]);
@@ -103,6 +104,7 @@ const MainForm = () => {
   };
   const category = React.useRef('');
   const region = React.useRef('');
+  const addresRef = React.useRef('');
   var price = 0;
 
   const priceMarks = [
@@ -151,6 +153,15 @@ const MainForm = () => {
     return `${value} min`;
   }
 
+
+  const [address, setAddress] = useState('');
+
+  const handleAddressChange = (event) => {
+    console.log(event);
+    setAddress(event);
+  }
+
+  
   return (
     <form id="browser">
       <ThemeProvider theme={theme}>
@@ -255,11 +266,12 @@ const MainForm = () => {
             />
           }
         />
+        <div>
         <PlacesAutocomplete
-      value={pointA.address}
-      onChange={(address) => setPointA({ ...pointA, address })}
-    >
-      {({ getInputProps, suggestions, getSuggestionItemProps }) => (
+          value={address}
+          onChange={handleAddressChange}
+        > 
+      {({ getInputProps, suggestions, getSuggestionItemProps}) => (
         <div className="autocomplete-container">
           <input
             {...getInputProps({
@@ -270,6 +282,7 @@ const MainForm = () => {
           <div className="suggestions-container">
             {suggestions.map((suggestion) => (
               <div
+                key={suggestion.placeId}
                 {...getSuggestionItemProps(suggestion)}
                 className="suggestion"
               >
@@ -280,6 +293,7 @@ const MainForm = () => {
         </div>
       )}
     </PlacesAutocomplete>
+    </div>
         <Box sx={{ width: 600 }} style={{display: "flex", padding: "0 40px 0 20px", "box-sizing": "border-box", "margin-top": "20px"}}>
           <span style={{width: "90px", "font-family": "Helvetica"}}>Czesne</span>
           <Slider
@@ -325,19 +339,26 @@ const MainForm = () => {
               "isAbroad": false,
               "maxPrice": price.toString()
             }, true);
-            console.log(`https://www.google.com/maps/dir/?api=1&origin=Space+Needle+Seattle+WA&destination=${replaceSpacesAndCommas(pointA.address)}&travelmode=bicycling`);
             let res = response.body
             let c = []
+            console.log(address)
             for (let key in res) {
               let row = res[key];
               c.push(row);
             }
+              c.push(pointA.address);
+            
+            
+            
+            
+            
             console.log(c)
             setCards(cards => c);
             setIsCards(isCards => true);
             setLoading(false);
           }}
-        >
+          
+        > 
           Dopasuj uczelnie!
         </Button>
       </ThemeProvider>
@@ -357,6 +378,7 @@ const MainForm = () => {
             address={card.address}
             type={types[card.level]}
             logoUrl={"https://aplikacje.edukacja.gov.pl/app/assets/logos/university/"+card.iconId+".png"}
+            home={address}
           />
         );
       })}
@@ -611,3 +633,4 @@ const regions = [
 ]
 
 export default MainForm;
+

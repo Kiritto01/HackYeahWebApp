@@ -11,8 +11,19 @@ import Button from '@mui/material/Button';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import './MainForm.css';
 import './Requests.js'
+import Card from './Card';
 
 const MainForm = () => {
+
+  const [loading, setLoading] = React.useState(false)
+  const [isCards, setIsCards] = React.useState(false)
+  const [cards, setCards] = React.useState([]);
+
+  const types = {
+    "1": "jednolite magisterskie", 
+    "2": "pierwszego stopnia",
+    "3": "drugiego stopnia"
+  };
 
   async function postEndpoint(endpoint, postData, toJSON = false) {
     if(toJSON) {postData = JSON.stringify(postData);}
@@ -272,6 +283,9 @@ const MainForm = () => {
         <Button
           variant="contained"
           onClick={async () => {
+            setCards(cards => []);
+            setIsCards(isCards => false);
+            setLoading(true);
             const response = await postEndpoint("course", {
               "wojewodztwo": region.current.value,
               "forma": form.toString(),
@@ -280,13 +294,40 @@ const MainForm = () => {
               "isAbroad": false,
               "maxPrice": price.toString()
             }, true);
-            console.log(response.body);
+            let res = response.body
+            let c = []
+            for (let key in res) {
+              let row = res[key];
+              c.push(row);
+            }
+            console.log(c)
+            setCards(cards => c);
+            setIsCards(isCards => true);
+            setLoading(false);
           }}
         >
-          Dopasuj uczelnie
+          Dopasuj uczelnie!
         </Button>
       </ThemeProvider>
-    
+      {() => {
+        if(loading == true) {
+          return (
+            <div className="loading">Ładowanie</div>
+          );
+        }
+      }}
+      {cards.map((card) => {
+        return (
+          <Card
+            name={card.leadingInstitutionName}
+            course={card.courseName}
+            price={card.amount}
+            address={card.address}
+            type={types[card.level]}
+            logoUrl={"https://aplikacje.edukacja.gov.pl/app/assets/logos/university/"+card.iconId+".png"}
+          />
+        );
+      })}
     </form>
   );
 }

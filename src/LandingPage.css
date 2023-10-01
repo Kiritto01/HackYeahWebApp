@@ -1,5 +1,6 @@
 :root {
     scroll-behavior: smooth;
+    scroll-padding: 80px;
 }
 
 #container {
@@ -56,7 +57,7 @@
     top: 20%;
 }
 
-#container header {
+#container>header {
     width: 100%;
     background-image: url("./background2.jpg");
     background-attachment: fixed;
@@ -67,7 +68,7 @@
     position: relative;
 }
 
-#container header::before {
+#container>header::before {
     content: "";
     position: absolute;
     top: 0;
@@ -130,7 +131,7 @@
     cursor: pointer;
 }
 
-#container main {
+#container > main {
     padding-top: 80px;
     padding-bottom: 80px;
 }

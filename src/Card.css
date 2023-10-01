@@ -1,0 +1,96 @@
+.card {
+    box-sizing: border-box;
+    display: flex;
+    width: 700px;
+    height: 350px;
+    border-radius: 20px;
+    border: 2px solid #0052A5;
+}
+
+.card-left {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    width: 70%;
+    height: 100%;
+    padding: 20px;
+}
+
+.card main {
+    display: flex;
+    flex-direction: column;
+    color: #0052A5;
+    height: 80%;
+}
+
+.card main header {
+    font-size: 30px;
+    font-weight: bold;
+}
+
+.card-info {
+    font-size: 18px;
+    box-sizing: border-box;
+    padding-top: 15px;
+}
+
+.card-buttons {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    height: 20%;
+}
+
+.card-buttons a {
+    appearance: none;
+    text-decoration: none;
+    display: flex;
+    width: 200px;
+    height: 40px;
+    border-radius: 15px;
+    background-color: #0052A5;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    transition: all 0.5s;
+}
+
+.card-buttons a:nth-child(2) {
+    background-color: #3C96F0;
+}
+
+.card-buttons a:hover {
+    cursor: pointer;
+    transform: scale(0.95);
+}
+
+.card-right {
+    box-sizing: border-box;
+    padding: 20px;
+    width: 30%;
+    display: flex;
+    flex-direction: column;
+}
+
+.card-logo {
+    height: 60%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.card-price {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    height: 40%;
+    color: #0052A5;
+    font-weight: bold;
+}
+
+.card-price h1 {
+    margin: 0;
+    font-size: 40px;
+}

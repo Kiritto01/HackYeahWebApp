@@ -1,4 +1,5 @@
 import "./Card.css"
+import React, { useState } from "react";
 
 const Card = (props) => {
     const [pointA, setPointA] = useState({ lat: null, lng: null, address: "" });

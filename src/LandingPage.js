@@ -6,10 +6,10 @@ const LandingPage = () => {
     return (
         <div id="container">
             <nav>
-                <div id="logo">Huj to wie</div>
-                <a class="navitem">Wyszukiwarka kierunków</a>
+                <div id="logo">Unihunt</div>
+                <a href="#browser" class="navitem">Wyszukiwarka kierunków</a>
                 <a class="navitem">Jak szukać studiów?</a>
-                <a class="navitem">Studenci zagraniczni</a>
+                <a href="https://study.gov.pl" target="_blank" class="navitem">Studenci zagraniczni</a>
             </nav>
             <header>
                 <div id="content">

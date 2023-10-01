@@ -36,6 +36,8 @@
   justify-content: space-between;
   align-items: center;
   color: #0052A5;
+}
+
 .autocomplete-container {
   position: relative;
   width: 78%;
@@ -78,4 +80,8 @@
 
 .suggestion:hover {
   background-color: #f0f0f0; /* Match Material-UI's hover background color */
+}
+
+.submit-button {
+  transform: translate(0, -30px);
 }

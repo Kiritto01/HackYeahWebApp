@@ -11,7 +11,6 @@ import Button from '@mui/material/Button';
 import Switch from '@mui/material/Switch';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import FormControlLabel from '@mui/material/FormControlLabel';
-import Switch from '@mui/material/Switch';
 import './MainForm.css';
 import './Requests.js'
 import PlacesAutocomplete, {
@@ -26,7 +25,7 @@ const MainForm = () => {
   const [isCards, setIsCards] = React.useState(false)
   const [cards, setCards] = React.useState([]);
 
-
+  const [pointA, setPointA] = React.useState({ lat: null, lng: null, address: "" });
 
   const types = {
     "1": "jednolite magisterskie", 
@@ -105,9 +104,12 @@ const MainForm = () => {
   const handleChangeForm = (event) => {
     setForm(event.target.value);
   };
+  const [abroad, setAbroad] = React.useState(false);
+  const handleSetAbroad = (event) => {
+    setAbroad(event.target.value);
+  };
   const category = React.useRef('');
   const region = React.useRef('');
-  const abroad = React.useRef('');
   var price = 0;
 
   const priceMarks = [
@@ -125,7 +127,7 @@ const MainForm = () => {
     },
     {
       value: 10000,
-      label: '10 000 zł',
+      label: '10 000 zł +',
     },
   ];
 
@@ -266,38 +268,11 @@ const MainForm = () => {
             Maksymalny koszt:
             <FormControlLabel
               control={
-                <Switch inputRef={abroad}/>
+                <Switch onChange={handleSetAbroad}/>
               }
               label="Jestem z za granicy"
             />
           </span>
-        <PlacesAutocomplete
-      value={pointA.address}
-      onChange={(address) => setPointA({ ...pointA, address })}
-    >
-      {({ getInputProps, suggestions, getSuggestionItemProps }) => (
-        <div className="autocomplete-container">
-          <input
-            {...getInputProps({
-              placeholder: 'Podaj adres zamieszkania',
-              className: 'autocomplete-input',
-            })}
-          />
-          <div className="suggestions-container">
-            {suggestions.map((suggestion) => (
-              <div
-                {...getSuggestionItemProps(suggestion)}
-                className="suggestion"
-              >
-                {suggestion.description}
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-    </PlacesAutocomplete>
-        <Box sx={{ width: 600 }} style={{display: "flex", padding: "0 40px 0 20px", "box-sizing": "border-box", "margin-top": "20px"}}>
-          <span style={{width: "90px", "font-family": "Helvetica"}}>Czesne</span>
           <Slider
             onChange={ (e, val) => {price=val}}
             id="price"
@@ -312,8 +287,37 @@ const MainForm = () => {
           />
         </Box>
 
+
         <Box sx={{ width: 600 }} className="form-slider">
-          <span>Maksymalny czas dojazdu: </span>
+          <span>
+            Maksymalny czas dojazdu:
+            <PlacesAutocomplete
+              value={pointA.address}
+              onChange={(address) => setPointA({ ...pointA, address })}
+            >
+            {({ getInputProps, suggestions, getSuggestionItemProps }) => (
+              <div className="autocomplete-container">
+                <input
+                  {...getInputProps({
+                    placeholder: 'Podaj adres zamieszkania',
+                    className: 'autocomplete-input',
+                  })}
+                />
+                <div className="suggestions-container">
+                  {suggestions.map((suggestion) => (
+                    <div
+                      key={suggestion.placeId}
+                      {...getSuggestionItemProps(suggestion)}
+                      className="suggestion"
+                    >
+                      {suggestion.description}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+            </PlacesAutocomplete>
+          </span>
           <Slider
             id="time"
             aria-label="Always visible"
@@ -328,20 +332,25 @@ const MainForm = () => {
         </Box>
         
         <Button
+          className="submit-button"
           variant="contained"
           onClick={async () => {
             setCards(cards => []);
             setIsCards(isCards => false);
             setLoading(true);
+            let a = false
+            if(abroad == "on") {a=true}
+            let p = price
+            if(price == 10000) {p = 999999}
+            console.log(abroad);
             const response = await postEndpoint("course", {
               "wojewodztwo": region.current.value,
               "forma": form.toString(),
               "poziom": type.toString(),
               "kategoria": category.current.value,
-              "isAbroad": false,
-              "maxPrice": price.toString()
+              "isAbroad": a,
+              "maxPrice": p.toString()
             }, true);
-            console.log(`https://www.google.com/maps/dir/?api=1&origin=Space+Needle+Seattle+WA&destination=${replaceSpacesAndCommas(pointA.address)}&travelmode=bicycling`);
             let res = response.body
             let c = []
             for (let key in res) {

@@ -30,6 +30,8 @@
 }
 
 .navitem {
+    appearance: none;
+    text-decoration: none;
     font-size: 18px;
     font-weight: bold;
     display: flex;
@@ -50,11 +52,28 @@
     width: 3px;
     border-radius: 2px;
     background-color: #0052A5;
+    transition: all 0.5s;
 }
 
 .navitem:nth-child(2)::before {
     height: 60%;
     top: 20%;
+}
+
+.navitem:visited, .navitem:active, .navitem:focus {
+    color: #0052A5;
+    text-decoration: none;
+}
+
+.navitem:hover {
+    cursor: pointer;
+}
+
+.navitem:hover::before {
+    height: 100%;
+    top: 0%;
+    border-radius: 0;
+    width: 10px;
 }
 
 #container>header {
@@ -129,6 +148,8 @@
 
 #content a:hover {
     cursor: pointer;
+    color: #0052A5;
+    text-decoration: none;
 }
 
 #container > main {
